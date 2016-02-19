@@ -9,12 +9,16 @@
 </body>
 <script>
 
+function render(data) {
+    quotes.innerHTML += "<div>" + JSON.stringify(data) + "</div>"
+}
+
 function load() {
     quotes.innerHTML = '';
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://localhost:8000/quotes/');
     xhr.send();
-    xhr.onload = ev => JSON.parse(xhr.response).map(q => quotes.innerHTML += "<p>"+q+"</p>");
+    xhr.onload = ev => JSON.parse(xhr.response).map(q => render(q));
     xhr.onerror = ev => alert("Unable to connect to server");
 }
 
