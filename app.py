@@ -1,3 +1,4 @@
+import sys
 import hug
 
 from sqlalchemy import create_engine
@@ -5,10 +6,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import sessionmaker
 
-if __name__ == '__main__':
-    dbname = 'db.sqlite'
-else:
+
+if 'test' in sys.argv[0]:
     dbname = ':memory:'
+else:
+    dbname = 'db.sqlite'
+
 
 engine = create_engine('sqlite:///'+dbname, echo=True)
 Session = sessionmaker(bind=engine)
