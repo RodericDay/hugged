@@ -5,11 +5,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine('sqlite:///:memory:', echo=True)
-Base = declarative_base()
+if __name__ == '__main__':
+    dbname = 'db.sqlite'
+else:
+    dbname = ':memory:'
 
+engine = create_engine('sqlite:///'+dbname, echo=True)
 Session = sessionmaker(bind=engine)
-session = Session()
+Base = declarative_base()
 
 
 class Quote(Base):
@@ -24,12 +27,16 @@ class Quote(Base):
 
 
 Base.metadata.create_all(engine)
-for text in ['a', 'b', 'c']:
-    quote = Quote(text=text)
-    session.add(quote)
-# session.commit()
 
 
 @hug.get('/quotes')
 def quotes():
+    session = Session()
     return [quote.text for quote in session.query(Quote).order_by(Quote.qid)]
+
+@hug.post('/quotes')
+def quotes(text):
+    session = Session()
+    quote = Quote(text=text)
+    session.add(quote)
+    session.commit()
