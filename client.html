@@ -1,0 +1,35 @@
+<meta charset="utf-8" />
+<title>QuoteDB</title>
+<body>
+    <form onsubmit="return post()" autocomplete="off">
+        <input id="text" type="text" autofocus />
+        <input type="submit" />
+    </form>
+    <div id="quotes"></div>
+</body>
+<script>
+
+function load() {
+    quotes.innerHTML = '';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:8000/quotes/');
+    xhr.send();
+    xhr.onload = ev => JSON.parse(xhr.response).map(q => quotes.innerHTML += "<p>"+q+"</p>");
+    xhr.onerror = ev => alert("Unable to connect to server");
+}
+
+function post() {
+    var xhr = new XMLHttpRequest();
+    var json = JSON.stringify({"text": text.value});
+    text.value = '';
+    xhr.open('POST', 'http://localhost:8000/quotes/');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Content-Length", json.length);
+    xhr.send(json);
+    xhr.onload = ev => load();
+    xhr.onerror = ev => alert("Error posting");
+    return false
+}
+
+load();
+</script>

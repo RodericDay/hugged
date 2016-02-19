@@ -40,3 +40,8 @@ def quotes(text):
     quote = Quote(text=text)
     session.add(quote)
     session.commit()
+
+@hug.response_middleware()
+def CORS(request, response, resource):
+    response.set_header('Access-Control-Allow-Origin', '*')
+    response.set_header('Access-Control-Allow-Headers', 'Content-Type')
